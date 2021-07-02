@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 void main() {
   runApp(MyApp());
@@ -45,28 +44,29 @@ class App extends StatefulWidget {
   final String email;
 
   const App(
-      {Key key,
-      @required this.name,
-      @required this.title,
-      @required this.number,
-      @required this.email})
-      : super(key: key);
+      {required this.name,
+      required this.title,
+      required this.number,
+      required this.email});
 
   @override
   _AppState createState() => _AppState();
 }
 
-class _AppState extends State<App> {
-  double widgetOpacity = 0.0;
+class _AppState extends State<App> with TickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 600),
+    vsync: this,
+  )..forward(from: 0.0);
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeIn,
+  );
 
-  // @override
-  void initState() {
-    super.initState();
-    debugPrint("here $widgetOpacity");
-    Future.delayed(Duration(milliseconds: 300), () {
-      widgetOpacity = 1;
-      debugPrint("here $widgetOpacity");
-    });
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -84,13 +84,12 @@ class _AppState extends State<App> {
                   1.0,
                 ],
                 colors: [
-                  Colors.teal[600],
+                  Colors.teal.shade600,
                   Colors.purple,
                 ]),
           ),
-          child: AnimatedOpacity(
-            opacity: widgetOpacity,
-            duration: const Duration(milliseconds: 800),
+          child: FadeTransition(
+            opacity: _animation,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -129,10 +128,9 @@ class InfoCard extends StatelessWidget {
   final String text;
 
   InfoCard({
-    Key key,
-    @required this.icon,
-    @required this.text,
-  }) : super(key: key);
+    required this.icon,
+    required this.text,
+  });
 
   @override
   Widget build(BuildContext context) {
