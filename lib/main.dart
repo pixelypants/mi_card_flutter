@@ -57,14 +57,15 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  double widget1Opacity = 0.0;
+  double widgetOpacity = 0.0;
 
   // @override
   void initState() {
     super.initState();
-    debugPrint("here $widget1Opacity");
+    debugPrint("here $widgetOpacity");
     Future.delayed(Duration(milliseconds: 300), () {
-      widget1Opacity = 1;
+      widgetOpacity = 1;
+      debugPrint("here $widgetOpacity");
     });
   }
 
@@ -88,7 +89,7 @@ class _AppState extends State<App> {
                 ]),
           ),
           child: AnimatedOpacity(
-            opacity: widget1Opacity,
+            opacity: widgetOpacity,
             duration: const Duration(milliseconds: 800),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
