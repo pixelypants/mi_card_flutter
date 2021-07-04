@@ -1,38 +1,36 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import './themes/pixelypants_kit.dart';
+import './components/info_card.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(PixelypantsApp());
 }
 
-class MyApp extends StatelessWidget {
+class PixelypantsApp extends StatefulWidget {
+  @override
+  _PixelypantsAppState createState() => _PixelypantsAppState();
+}
+
+class _PixelypantsAppState extends State<PixelypantsApp> {
+  @override
+  void initState() {
+    super.initState();
+    currentTheme.addListener(() {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(
-          fontFamily: 'Source Sans Pro',
-          textTheme: TextTheme(
-              bodyText1: TextStyle(
-                color: Colors.teal[900],
-                fontSize: 20.0,
-              ),
-              bodyText2: TextStyle(
-                fontSize: 16.0,
-                color: Colors.teal[100],
-                letterSpacing: 5.5,
-                fontWeight: FontWeight.bold,
-              ),
-              headline1: TextStyle(
-                fontFamily: 'Pacifico',
-                fontSize: 40.0,
-                color: Colors.white,
-              )),
-        ),
+        theme: PixelypantsKit.lightTheme,
+        darkTheme: PixelypantsKit.darkTheme,
+        themeMode: currentTheme.currentTheme,
         home: App(
           title: 'FLUTTER DEVELOPER',
           name: 'Hudson Graham',
           email: 'hudson.graham@gmail.com',
-          number: '+61 428  832 249',
+          number: '+61 111  222 333',
         ));
   }
 }
@@ -71,79 +69,68 @@ class _AppState extends State<App> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.purple,
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [
-                  0.2,
-                  1.0,
-                ],
-                colors: [
-                  Colors.teal.shade600,
-                  Colors.purple,
-                ]),
-          ),
-          child: FadeTransition(
-            opacity: _animation,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 50.0,
-                  backgroundImage: AssetImage('images/avatar.jpeg'),
-                ),
-                Text(
-                  widget.name,
-                  style: Theme.of(context).textTheme.headline1,
-                ),
-                Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.bodyText2,
-                ),
-                SizedBox(
-                  height: 20.0,
-                  width: 150.0,
-                  child: Divider(
-                    color: Colors.teal[100],
-                  ),
-                ),
-                InfoCard(icon: Icons.phone, text: widget.number),
-                InfoCard(icon: Icons.email, text: widget.email),
-              ],
-            ),
+      appBar: AppBar(
+        title: Text(
+          widget.title,
+          style: TextStyle(
+            color: theme.accentColor,
           ),
         ),
-      ),
-    );
-  }
-}
-
-class InfoCard extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  InfoCard({
-    required this.icon,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-      child: Padding(
-        padding: const EdgeInsets.all(3.0),
-        child: ListTile(
-          leading: Icon(
-            icon,
-            color: Colors.teal,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.brightness_4_rounded),
+            onPressed: () {
+              currentTheme.toggleTheme();
+            },
           ),
-          title: Text(text, style: Theme.of(context).textTheme.bodyText1),
+        ],
+      ),
+      backgroundColor: Colors.purple,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: [
+                0.2,
+                1.0,
+              ],
+              colors: [
+                PixelypantsKit.gradientColorA, //Colors.teal.shade600,
+                PixelypantsKit.gradientColorB //Colors.teal.shade600,
+              ]),
+        ),
+        child: FadeTransition(
+          opacity: _animation,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircleAvatar(
+                radius: 50.0,
+                backgroundImage: AssetImage('images/avatar.jpeg'),
+              ),
+              Text(
+                widget.name,
+                style: Theme.of(context).textTheme.headline1,
+              ),
+              Text(
+                widget.title,
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
+              SizedBox(
+                height: 20.0,
+                width: 150.0,
+                child: Divider(
+                  color: Colors.teal[100],
+                ),
+              ),
+              InfoCard(icon: Icons.phone, text: widget.number),
+              InfoCard(icon: Icons.email, text: widget.email),
+            ],
+          ),
         ),
       ),
     );
